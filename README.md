@@ -2,9 +2,12 @@
 
 Helper scripts to process [phototimer][1] images.
 
-- `phototimer-images-to-mp4.sh`: Sort a path of timestamped phototimer images by frame timestamp, create a symlinked directory structure. Then, optionally add a timestamp overlay to each frame. Finally convert into a time-lapse `.mp4` (x264) video.
-- `phototimer-images-timestamp-overlay-multithreaded.py`: Python helper script to add timestamp overlay to each frame.  Uses multithreading to speed up image processing.  Dependencies are listed in `requirements.txt`.
-- `phototimer-images-timestamp.py`: Alternate python helper script to add timestamp overlay to each frame.  Does *_NOT_* use multithreading.  Dependencies are listed in `requirements.txt`, minus `multithreading`.
+- *`phototimer-images-to-mp4.sh`*:
+  - Sort a path of timestamped phototimer images by frame timestamp, create a symlinked directory structure. Then, optionally add a timestamp overlay to each frame. Finally convert into a time-lapse `.mp4` (x264) video.
+- *`phototimer-images-timestamp-overlay-multithreaded.py`*:
+  - Python helper script to add timestamp overlay to each frame.  Uses multithreading to speed up image processing.  Dependencies are listed in `requirements.txt`.
+- *`phototimer-images-timestamp.py`*:
+  - Alternate python helper script to add timestamp overlay to each frame.  Does *_NOT_* use multithreading.  Dependencies are listed in `requirements.txt`, minus `multithreading`.
 
 # Usage
 
