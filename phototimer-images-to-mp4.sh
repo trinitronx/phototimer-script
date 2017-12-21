@@ -201,7 +201,7 @@ i=0
 base_dir="$(echo -n "${PHOTOTIMER_DIR}" | sed s#//*#/#g)"
 base_dir="${base_dir%%/}"
 
-[ -n "$DEBUG" ] && echo "base_dir: $base_dir"
+[ -n "$DEBUG" ] && echo "base_dir: $base_dir" >&2
 
 for x in $(find ${PHOTOTIMER_DIR}/images/ -type f -iname '*.jpg' | sed s#//*#/#g | sort -t '/' $sort_field_flags  ); do
   $DRY_RUN ln -sf "$x" "${base_dir}/symlink_ordering/$(printf "%0${num_digits}d" $i).jpg";
@@ -214,6 +214,13 @@ size=2048x1536
 num_cpu=$(sysctl -n hw.ncpu)
 [ -z "$num_cpu" ] && num_cpu=$(nproc --all)
 (( filter_threads=num_cpu*2 ))
+
+if [ -n "$DEBUG" ]; then
+  echo "framerate: $framerate" >&2
+  echo "size: $size" >&2
+  echo "num_cpu: $num_cpu" >&2
+  echo "filter_threads: $filter_threads" >&2
+fi
 
 # Original
 #contrast=1.2
