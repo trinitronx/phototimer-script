@@ -212,6 +212,7 @@ done
 framerate=25
 size=2048x1536
 num_cpu=$(sysctl -n hw.ncpu)
+[ -z "$num_cpu" ] && num_cpu=$(nproc --all)
 (( filter_threads=num_cpu*2 ))
 
 # Original
