@@ -9,6 +9,7 @@
 import multiprocessing
 import threading
 import os
+import sys
 import pytz
 try:
    import Queue as queue
@@ -40,8 +41,20 @@ class ThreadTimestamper(threading.Thread):
     def __init__(self, file_queue):
         threading.Thread.__init__(self)
         self.queue = file_queue
-        self.font = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 72)
-        self.fontsmall = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 32)
+        if sys.platform.startswith('win') or sys.platform.startswith('cygwin'):
+            FONTDIRS = [ os.path.join(os.environ['WINDIR'], 'Fonts') ]
+            self.font_name = "Helvetica.ttf"
+        elif sys.platform.startswith('darwin'):
+            FONTDIRS = [ os.path.join("System", "Library", "Fonts") ]
+            self.font_name = "HelveticaNeue.dfont"
+        else: # linux, *bsd and everything else
+            # [see below, commit suicide and develop this bit]
+            FONTDIRS = [ os.path.join(os.path.sep, "usr", "share", "fonts") ]
+            self.font_name = os.path.join("truetype", "fonts-beng-extra", "JamrulNormal.ttf")
+#        self.font = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 72)
+#        self.fontsmall = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 32)
+        self.font = ImageFont.truetype(os.path.join(FONTDIRS[0], self.font_name), 72)
+        self.fontsmall = ImageFont.truetype(os.path.join(FONTDIRS[0], self.font_name), 32)
         self.fontcolor = (238, 161, 6)
         self.counter = 0
         self.update_interval = 10
