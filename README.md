@@ -12,7 +12,7 @@ Helper scripts to process [phototimer][1] images.
 # Dependencies / Requirements
 
 - *`phototimer-images-timestamp-overlay-multithreaded.py`*:
-  - `python3`
+  - `python3`: `>= 3.7` preferred ([for threading bugfixes][2])
     - `os`
     - `datetime`
     - `threading`
@@ -91,5 +91,6 @@ Helper scripts to process [phototimer][1] images.
 [GPLv3][gplv3]
 
 [1]: https://github.com/alexellis/phototimer
+[2]: https://codewithoutrules.com/2017/08/16/concurrency-python/
 [gplv3]: https://choosealicense.com/licenses/gpl-3.0/
 
