@@ -9,6 +9,32 @@ Helper scripts to process [phototimer][1] images.
 - *`phototimer-images-timestamp.py`*:
   - Alternate python helper script to add timestamp overlay to each frame.  Does *_NOT_* use multithreading.  Dependencies are listed in `requirements.txt`, minus `multithreading`.
 
+# Dependencies / Requirements
+
+- *`phototimer-images-timestamp-overlay-multithreaded.py`*:
+  - `python3`
+    - `os`
+    - `datetime`
+    - `threading`
+  - `pip` packagess:
+    - multiprocess
+    - Pillow
+    - pytz
+- *`phototimer-images-timestamp.py`*:
+  - `python3`
+    - `os`
+    - `datetime`
+  - `pip` packagess:
+    - Pillow
+    - pytz
+- *`phototimer-images-to-mp4.sh`*:
+  - `bash`
+  - `ffmpeg`
+  - `find`
+  - CPU core detection requires one of the following commands:
+    - `sysctl -n hw.ncpu`
+    - `nproc --all`
+
 # Usage
 
 

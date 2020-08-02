@@ -9,7 +9,9 @@
 import multiprocessing
 import threading
 import os
+import sys
 import pytz
+import traceback
 try:
    import Queue as queue
 except ImportError:
@@ -39,9 +41,21 @@ class ThreadTimestamper(threading.Thread):
     """
     def __init__(self, file_queue):
         threading.Thread.__init__(self)
-        self.queue = file_queue
-        self.font = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 72)
-        self.fontsmall = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 32)
+        self.q = file_queue
+        if sys.platform.startswith('win') or sys.platform.startswith('cygwin'):
+            FONTDIRS = [ os.path.join(os.environ['WINDIR'], 'Fonts') ]
+            self.font_name = "Helvetica.ttf"
+        elif sys.platform.startswith('darwin'):
+            FONTDIRS = [ os.path.join("System", "Library", "Fonts") ]
+            self.font_name = "HelveticaNeue.dfont"
+        else: # linux, *bsd and everything else
+            # [see below, commit suicide and develop this bit]
+            FONTDIRS = [ os.path.join(os.path.sep, "usr", "share", "fonts") ]
+            self.font_name = os.path.join("truetype", "fonts-beng-extra", "JamrulNormal.ttf")
+#        self.font = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 72)
+#        self.fontsmall = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.dfont", 32)
+        self.font = ImageFont.truetype(os.path.join(FONTDIRS[0], self.font_name), 72)
+        self.fontsmall = ImageFont.truetype(os.path.join(FONTDIRS[0], self.font_name), 32)
         self.fontcolor = (238, 161, 6)
         self.counter = 0
         self.update_interval = 10
@@ -50,11 +64,26 @@ class ThreadTimestamper(threading.Thread):
 
     def run(self):
         # Change to while True for long-running daemonized style worker thread with unlimited input
-        while not self.queue.empty():
-            inpfile = self.queue.get()
-            self.workermethod(inpfile)
-            self.queue.task_done()
-
+        while not self.q.empty():
+            try:
+                inpfile = self.q.get_nowait()
+            except queue.Empty:
+                logging.info("STOP thread run() DONE EMPTY QUEUE!!!")
+                return
+            try:
+                self.workermethod(inpfile)
+            except:
+                logging.error("Error processing image {0}".format(inpfile))
+                logging.error(traceback.format_exc())
+            finally:
+                # Always mark tasks done, even if exceptions thrown!
+                # Otherwise queue.join() deadlocks waiting for last task(s) to
+                # be done
+                self.q.task_done()
+            if self.counter % self.update_interval == 0:
+                logging.info("Image {0} complete".format(self.counter))
+        logging.info("STOP thread run() DONE!!!")
+        return
     def workermethod(self, i):
         '''
            Worker method for processing a file off queue

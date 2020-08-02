@@ -7,6 +7,7 @@
 ### License: see the LICENSE file
 ###
 SCRIPT="$0"
+SCRIPT_DIR="$(dirname $SCRIPT)"
 
 show_license_boilerplate() {
   local author='James Cuzella'
@@ -246,7 +247,7 @@ if [[ "$TIMESTAMP_FRAMES" == 'true' ]]; then
   echo "INFO: Begin rendering date + timestamp to frames" >&2
   echo "WARN: This is an irreversible process and will overwrite the original images!" >&2
   echo "" >&2
-  $DRY_RUN python ~/bin/phototimer-images-timestamp-overlay-multithreaded.py
+  $DRY_RUN python ${SCRIPT_DIR}/phototimer-images-timestamp-overlay-multithreaded.py
 fi
 
 echo "INFO: Begin Encoding frames to x264 video" >&2

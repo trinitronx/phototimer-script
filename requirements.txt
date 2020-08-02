@@ -1,3 +1,3 @@
-multiprocess=0.70.5
-Pillow=4.1.1
-pytz=2017.2
+multiprocess==0.70.10
+Pillow==7.2.0
+pytz==2020.1
