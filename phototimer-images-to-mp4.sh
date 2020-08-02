@@ -7,7 +7,7 @@
 ### License: see the LICENSE file
 ###
 SCRIPT="$0"
-SCRIPT_DIR="$(dirname $SCRIPT)"
+SCRIPT_DIR="$(dirname $(realpath $SCRIPT))"
 
 show_license_boilerplate() {
   local author='James Cuzella'
