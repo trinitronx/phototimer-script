@@ -15,6 +15,7 @@
 
 ### Features
 
+
 * Implement fallback CPU count methods (Fixes [#5](https://github.com/trinitronx/phototimer-script/issues/5))
 * **CHANGELOG:** Add CHANGELOG.md manually (for now)
 * **CHANGELOG:** Use `git-chglog` for CHANGELOG.md generation
