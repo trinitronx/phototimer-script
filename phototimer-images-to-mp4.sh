@@ -212,7 +212,11 @@ done
 ## TODO: Make these command line options with defaults?
 framerate=25
 size=2048x1536
-num_cpu=$(sysctl -n hw.ncpu)
+if sysctl -n hw.ncpu 2>/dev/null ; then
+  num_cpu=$(sysctl -n hw.ncpu 2>/dev/null)
+elif [ -e /proc/cpuinfo ]; then
+  num_cpu=$(grep -c -E '^processor.+: [0-9]+' /proc/cpuinfo)
+fi
 [ -z "$num_cpu" ] && num_cpu=$(nproc --all)
 (( filter_threads=num_cpu*2 ))
 
