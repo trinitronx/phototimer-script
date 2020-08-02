@@ -11,6 +11,7 @@ import threading
 import os
 import sys
 import pytz
+import traceback
 try:
    import Queue as queue
 except ImportError:
@@ -40,7 +41,7 @@ class ThreadTimestamper(threading.Thread):
     """
     def __init__(self, file_queue):
         threading.Thread.__init__(self)
-        self.queue = file_queue
+        self.q = file_queue
         if sys.platform.startswith('win') or sys.platform.startswith('cygwin'):
             FONTDIRS = [ os.path.join(os.environ['WINDIR'], 'Fonts') ]
             self.font_name = "Helvetica.ttf"
@@ -63,11 +64,26 @@ class ThreadTimestamper(threading.Thread):
 
     def run(self):
         # Change to while True for long-running daemonized style worker thread with unlimited input
-        while not self.queue.empty():
-            inpfile = self.queue.get()
-            self.workermethod(inpfile)
-            self.queue.task_done()
-
+        while not self.q.empty():
+            try:
+                inpfile = self.q.get_nowait()
+            except queue.Empty:
+                logging.info("STOP thread run() DONE EMPTY QUEUE!!!")
+                return
+            try:
+                self.workermethod(inpfile)
+            except:
+                logging.error("Error processing image {0}".format(inpfile))
+                logging.error(traceback.format_exc())
+            finally:
+                # Always mark tasks done, even if exceptions thrown!
+                # Otherwise queue.join() deadlocks waiting for last task(s) to
+                # be done
+                self.q.task_done()
+            if self.counter % self.update_interval == 0:
+                logging.info("Image {0} complete".format(self.counter))
+        logging.info("STOP thread run() DONE!!!")
+        return
     def workermethod(self, i):
         '''
            Worker method for processing a file off queue
